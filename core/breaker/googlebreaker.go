@@ -34,11 +34,14 @@ func newGoogleBreaker() *googleBreaker {
 	}
 }
 
+// 是否接受请求
 func (b *googleBreaker) accept() error {
-	accepts, total := b.history()
+	accepts, total := b.history() // 历史请求接受数量和请求总量
 	weightedAccepts := b.k * float64(accepts)
 	// https://landing.google.com/sre/sre-book/chapters/handling-overload/#eq2101
-	dropRatio := math.Max(0, (float64(total-protection)-weightedAccepts)/float64(total+1))
+	dropRatio := math.Max(0, (float64(total-protection)-weightedAccepts)/float64(total+1)) 	// 计算丢弃请求概率
+	// 这里是个变种实现，引入 protection 
+
 	if dropRatio <= 0 {
 		return nil
 	}
